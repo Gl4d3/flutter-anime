@@ -427,6 +427,132 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     ],
                   ),
                 ),
+                FutureBuilder<ApiCallResponse>(
+                  future: PopularAnimeCall.call(),
+                  builder: (context, snapshot) {
+                    // Customize what your widget looks like when it's loading.
+                    if (!snapshot.hasData) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(
+                              50.0, 50.0, 50.0, 50.0),
+                          child: SizedBox(
+                            width: 40.0,
+                            height: 40.0,
+                            child: SpinKitFoldingCube(
+                              color: FlutterFlowTheme.of(context).primary,
+                              size: 40.0,
+                            ),
+                          ),
+                        ),
+                      );
+                    }
+                    final listViewPopularAnimeResponse = snapshot.data!;
+                    return ListView(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Text(
+                              'Popular Titles',
+                              style: FlutterFlowTheme.of(context).bodyMedium,
+                            ),
+                          ],
+                        ),
+                        Builder(
+                          builder: (context) {
+                            final popularAnimeTile = getJsonField(
+                              listViewPopularAnimeResponse.jsonBody,
+                              r'''$''',
+                            ).toList().take(30).toList();
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                children: List.generate(popularAnimeTile.length,
+                                    (popularAnimeTileIndex) {
+                                  final popularAnimeTileItem =
+                                      popularAnimeTile[popularAnimeTileIndex];
+                                  return Container(
+                                    width: 150.0,
+                                    height: 150.0,
+                                    child: Stack(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(0.0),
+                                          child: Image.network(
+                                            getJsonField(
+                                              popularAnimeTileItem,
+                                              r'''$..animeImg''',
+                                            ),
+                                            width: 300.0,
+                                            height: 200.0,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        Align(
+                                          alignment:
+                                              AlignmentDirectional(-1.0, 1.0),
+                                          child: ClipRRect(
+                                            child: Container(
+                                              width: 156.0,
+                                              height: 35.0,
+                                              decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  colors: [
+                                                    Color(0x03505051),
+                                                    Color(0x99151616)
+                                                  ],
+                                                  stops: [0.0, 1.0],
+                                                  begin: AlignmentDirectional(
+                                                      0.0, -1.0),
+                                                  end: AlignmentDirectional(
+                                                      0, 1.0),
+                                                ),
+                                              ),
+                                              alignment: AlignmentDirectional(
+                                                  0.0, 1.0),
+                                              child: Align(
+                                                alignment: AlignmentDirectional(
+                                                    0.0, 1.0),
+                                                child: Text(
+                                                  getJsonField(
+                                                    popularAnimeTileItem,
+                                                    r'''$..animeTitle''',
+                                                  ).toString(),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily:
+                                                            'Readex Pro',
+                                                        color: FlutterFlowTheme
+                                                                .of(context)
+                                                            .primaryBackground,
+                                                      ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).divide(SizedBox(
+                                  width: 10.0,
+                                )),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ],
             ),
           ),
